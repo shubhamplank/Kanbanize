@@ -9,13 +9,16 @@ import localFont from "next/font/local";
 interface LogoProps {}
 
 const headingFont = localFont({
-  src: "../../public/font.woff2",
+  src: "../public/font.woff2",
 });
 
 const Logo: FC<LogoProps> = () => {
   return (
-    <Link href="/">
-      <div className="hover:opacity-75 transition items-center gap-x-2 hidden md:flex">
+    <Link
+      href="/"
+      className="hover:opacity-75 transition items-center gap-x-2 hidden md:flex"
+    >
+      <div>
         <Image
           src="/logo.svg"
           alt="logo"
