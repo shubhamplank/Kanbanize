@@ -7,11 +7,13 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:C:/Users/Shubham/Desktop/database/trellodb"
+  url      = "file:/Users/abhishek/Desktop/database/trellodb"
 }
 
-model Board { 
+model Board {
   id String @id @default(uuid())
 
   title String
 }
+
+˜
