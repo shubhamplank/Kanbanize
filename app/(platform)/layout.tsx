@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { FC } from "react";
+import { Toaster } from "sonner";
 
 interface PlatformLayoutProps {
   children: React.ReactNode;
@@ -8,7 +9,12 @@ interface PlatformLayoutProps {
 const PlatformLayout: FC<PlatformLayoutProps> = ({
   children,
 }) => {
-  return <ClerkProvider>{children}</ClerkProvider>;
+  return (
+    <ClerkProvider>
+      <Toaster />
+      {children}
+    </ClerkProvider>
+  );
 };
 
 export default PlatformLayout;

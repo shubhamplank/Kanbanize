@@ -7,6 +7,7 @@ import {
 import { Plus } from "lucide-react";
 import type { FC } from "react";
 import MobileSidebar from "./mobile-sidebar";
+import { FormPopover } from "@/components/form/form-popover";
 
 interface NavbarProps {}
 
@@ -18,21 +19,28 @@ const Navbar: FC<NavbarProps> = () => {
         <div className="hidden md:flex">
           <Logo />
         </div>
-        <Button
-          variant={"primary"}
-          size="sm"
-          className="rounded-sm hidden md:block h-auto py-1.5 px-2"
+        <FormPopover
+          align="start"
+          side="bottom"
+          sideOffset={18}
         >
-          Create
-        </Button>
-
-        <Button
-          variant={"primary"}
-          size="sm"
-          className="rounded-sm md:hidden"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
+          <Button
+            variant={"primary"}
+            size="sm"
+            className="rounded-sm hidden md:block h-auto py-1.5 px-2"
+          >
+            Create
+          </Button>
+        </FormPopover>
+        <FormPopover>
+          <Button
+            variant={"primary"}
+            size="sm"
+            className="rounded-sm md:hidden"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </FormPopover>
       </div>
       <div className="flex items-center ml-auto gap-x-2">
         <OrganizationSwitcher
