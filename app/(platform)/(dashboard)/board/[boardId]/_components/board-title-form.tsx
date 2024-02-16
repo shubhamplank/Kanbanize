@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 
 import { Board } from "@prisma/client";
 import { FormInput } from "@/components/form/form-input";
+import { useAction } from "@/hooks/use-action";
+import { updateBoard } from "@/actions/update-board";
+import { toast } from "sonner";
 
 interface BoardTitleFormProps {
   data: Board;
@@ -19,7 +22,19 @@ interface BoardTitleFormProps {
 const BoardTitleForm: FC<BoardTitleFormProps> = ({
   data,
 }) => {
+  const { execute } = useAction(updateBoard, {
+    onSuccess: (data) => {
+      toast.success(`${data.title} updated`);
+      setTitle(data.title);
+    },
+    onError: (err) => {
+      toast.error(err);
+    },
+  });
+
+  const [title, setTitle] = useState(data.title);
   const [isEditing, setIsEditing] = useState(false);
+
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
@@ -36,8 +51,9 @@ const BoardTitleForm: FC<BoardTitleFormProps> = ({
   };
 
   const onSubmit = (formData: FormData) => {
-    const title = formData.get("title");
+    const title = formData.get("title") as string;
     console.log("i am submited", title);
+    execute({ title, id: data.id });
   };
 
   const onBlur = () => {
@@ -55,7 +71,7 @@ const BoardTitleForm: FC<BoardTitleFormProps> = ({
           ref={inputRef}
           id="title"
           onBlur={onBlur}
-          defaultValue={data.title}
+          defaultValue={title}
           className="text-lg font-bold px-[7px] py-1 h-7 bg-transparent focus-visible:outline-none focus-visible:ring-transparent border-none"
         />
       </form>
@@ -68,7 +84,7 @@ const BoardTitleForm: FC<BoardTitleFormProps> = ({
       variant={"transparent"}
       onClick={enableEditing}
     >
-      {data.title}
+      {title}
     </Button>
   );
 };
