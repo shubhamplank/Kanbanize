@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { startCase } from "lodash";
 import { notFound, redirect } from "next/navigation";
 import type { FC } from "react";
+import BoardNavbar from "./_components/board-navbar";
 
 export async function generateMetadata({
   params,
@@ -56,6 +57,8 @@ const BoardIdLayout: FC<BoardIdLayoutProps> = async ({
         backgroundImage: `url(${board.imageFullUrl})`,
       }}
     >
+      <BoardNavbar data={board} />
+      <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative pt-28 h-full">
         <main>{children}</main>
       </div>
