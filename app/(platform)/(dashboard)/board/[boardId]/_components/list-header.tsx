@@ -6,6 +6,7 @@ import { FormInput } from "@/components/form/form-input";
 import { useAction } from "@/hooks/use-action";
 import { updateList } from "@/actions/update-list";
 import { toast } from "sonner";
+import ListOptions from "./list-options";
 
 interface ListHeaderProps {
   data: List;
@@ -40,14 +41,6 @@ const ListHeader: FC<ListHeaderProps> = ({ data }) => {
     setIsEditing(false);
   };
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      formRef.current?.requestSubmit();
-    }
-  };
-
-  useEventListener("keydown", onKeyDown);
-
   const onSubmit = (formData: FormData) => {
     const title = formData.get("title") as string;
     const id = formData.get("id") as string;
@@ -64,17 +57,21 @@ const ListHeader: FC<ListHeaderProps> = ({ data }) => {
     formRef.current?.requestSubmit();
   };
 
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      formRef.current?.requestSubmit();
+    }
+  };
+
+  useEventListener("keydown", onKeyDown);
+
   return (
-    <div
-      onClick={enableEditing}
-      className="pt-2 px-2 text-sm font-semibold flex justify-between items-center gap-x-2"
-    >
+    <div className="pt-2 px-2 text-sm font-semibold flex justify-between items-center gap-x-2">
       {isEditing ? (
         <form
+          ref={formRef}
           action={onSubmit}
           className="flex-1 px-[2px]"
-          ref={formRef}
-          onBlur={onBlur}
         >
           <input
             hidden
@@ -90,7 +87,7 @@ const ListHeader: FC<ListHeaderProps> = ({ data }) => {
           />
           <FormInput
             ref={inputRef}
-            onBlur={() => {}}
+            onBlur={onBlur}
             id="title"
             placeholder="Enter list title.."
             defaultValue={title}
@@ -102,10 +99,17 @@ const ListHeader: FC<ListHeaderProps> = ({ data }) => {
           />
         </form>
       ) : (
-        <div className="w-full text-sm px-2.5 py-1 h-7 font-medium border-transparent">
+        <div
+          className="w-full text-sm px-2.5 py-1 h-7 font-medium border-transparent"
+          onClick={enableEditing}
+        >
           {title}
         </div>
       )}
+      <ListOptions
+        onAddCard={() => {}}
+        data={data}
+      />
     </div>
   );
 };
