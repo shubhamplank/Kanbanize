@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FormSubmit } from "@/components/form/form-submit";
+import { copyList } from "@/actions/copy-list";
 
 interface ListOptionsProps {
   onAddCard: () => void;
@@ -37,6 +38,23 @@ const ListOptions: FC<ListOptionsProps> = ({
       toast.error(err);
     },
   });
+  const { execute: executeCopy } = useAction(copyList, {
+    onSuccess: (data) => {
+      toast.success(`${data.title} copied`);
+      closeRef.current?.click();
+    },
+    onError: (err) => {
+      toast.error(err);
+    },
+  });
+
+  const onCopy = (formData: FormData) => {
+    const id = formData.get("id") as string;
+    const boardId = formData.get("boardId") as string;
+
+    executeCopy({ id, boardId });
+  };
+
   const onDelete = (formData: FormData) => {
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
@@ -79,7 +97,7 @@ const ListOptions: FC<ListOptionsProps> = ({
         >
           Add Card...
         </Button>
-        <form>
+        <form action={onCopy}>
           <input
             hidden
             name="id"
