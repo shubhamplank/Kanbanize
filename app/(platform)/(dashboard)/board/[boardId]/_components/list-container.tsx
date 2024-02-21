@@ -1,6 +1,13 @@
 "use client";
 import { useState, type FC, useEffect } from "react";
+
+import { toast } from "sonner";
 import { ListWithCards } from "@/types";
+
+import { useAction } from "@/hooks/use-action";
+import { updateListOrder } from "@/actions/update-list-order";
+import { updateCardOrder } from "@/actions/update-card-order";
+
 import ListForm from "./list-form";
 import { ListItem } from "./list-item";
 import {
@@ -28,6 +35,29 @@ const ListContainer: FC<ListContainerProps> = ({
   boardId,
 }) => {
   const [orderedData, setOrderedData] = useState(data);
+
+  const { execute: executeUpdateListOrder } = useAction(
+    updateListOrder,
+    {
+      onSuccess: () => {
+        toast.success("List reordered");
+      },
+      onError: (error) => {
+        toast.error(error);
+      },
+    }
+  );
+  const { execute: executeUpdateCardOrder } = useAction(
+    updateCardOrder,
+    {
+      onSuccess: () => {
+        toast.success("Card reordered");
+      },
+      onError: (error) => {
+        toast.error(error);
+      },
+    }
+  );
 
   useEffect(() => {
     setOrderedData(data);
@@ -58,7 +88,7 @@ const ListContainer: FC<ListContainerProps> = ({
 
       setOrderedData(items);
 
-      // TODO: trigger server action
+      executeUpdateListOrder({ items, boardId });
     }
     // if user moves card
     if (type === "card") {
@@ -101,6 +131,10 @@ const ListContainer: FC<ListContainerProps> = ({
         sourceList.cards = reorderedCards;
 
         setOrderedData(newOrderedData);
+        executeUpdateCardOrder({
+          boardId,
+          items: reorderedCards,
+        });
       } else {
         // Remove card from the source list
         const [movedCard] = sourceList.cards.splice(
@@ -109,7 +143,7 @@ const ListContainer: FC<ListContainerProps> = ({
         );
 
         // Assign the new listId to the moved card
-        movedCard.listId = destination.droppbleId;
+        movedCard.listId = destination.droppableId;
 
         // Add card to the destination list
         destList.cards.splice(
@@ -126,6 +160,10 @@ const ListContainer: FC<ListContainerProps> = ({
           card.order = idx;
         });
         setOrderedData(newOrderedData);
+        executeUpdateCardOrder({
+          boardId,
+          items: destList.cards,
+        });
       }
     }
   };

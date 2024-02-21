@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
-import { UpdateList } from "./schema";
+import { UpdateListOrder } from "./schema";
 
 const handler = async (
   data: InputType
@@ -20,29 +20,31 @@ const handler = async (
     };
   }
 
-  const { title, id, boardId } = data;
+  const { items, boardId } = data;
 
-  let list;
+  let lists;
 
   try {
-    list = await db.list.update({
-      where: { id, boardId, board: { orgId } },
-      data: {
-        title,
-      },
-    });
+    const transaction = items.map((list) =>
+      db.list.update({
+        where: { id: list.id, board: { orgId } },
+        data: { order: list.order },
+      })
+    );
+
+    lists = await db.$transaction(transaction);
   } catch (error) {
-    console.error("update_list", error);
+    console.error("reorder_list", error);
     return {
-      error: "Failed to update.",
+      error: "Failed to reorder List.",
     };
   }
 
   revalidatePath(`/board/${boardId}`);
-  return { data: list };
+  return { data: lists };
 };
 
-export const updateList = createSafeAction(
-  UpdateList,
+export const updateListOrder = createSafeAction(
+  UpdateListOrder,
   handler
 );
