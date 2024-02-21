@@ -13,7 +13,7 @@ interface ListHeaderProps {
   onAddCard: () => void;
 }
 
-const ListHeader: FC<ListHeaderProps> = ({
+export const ListHeader: FC<ListHeaderProps> = ({
   data,
   onAddCard,
 }) => {
@@ -117,5 +117,3 @@ const ListHeader: FC<ListHeaderProps> = ({
     </div>
   );
 };
-
-export default ListHeader;

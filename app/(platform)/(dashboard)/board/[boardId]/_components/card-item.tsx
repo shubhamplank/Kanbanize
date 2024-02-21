@@ -1,17 +1,34 @@
+"use client";
+
 import { Card } from "@prisma/client";
-import type { FC } from "react";
+import { Draggable } from "@hello-pangea/dnd";
 
 interface CardItemProps {
   data: Card;
   index: number;
 }
 
-const CardItem: FC<CardItemProps> = ({ data, index }) => {
+export const CardItem = ({
+  data,
+  index,
+}: CardItemProps) => {
   return (
-    <div className="truncate border-2 border-transparent hover:border-black py-2 px-3 text-sm bg-white rounded-sm shadow-sm">
-      {data.title}
-    </div>
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          role="button"
+          onClick={() => {}}
+          className="truncate border-2 border-transparent hover:border-black py-2 px-3 text-sm bg-white rounded-md shadow-sm"
+        >
+          {data.title}
+        </div>
+      )}
+    </Draggable>
   );
 };
-
-export default CardItem;
