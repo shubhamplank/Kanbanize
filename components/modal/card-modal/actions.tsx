@@ -16,11 +16,11 @@ interface ActionsProps {
   title: string;
 }
 
-export const Actions: FC<ActionsProps> = ({
+export const Actions = ({
   id,
   listId,
   title,
-}) => {
+}: ActionsProps) => {
   const params = useParams();
   const { onClose } = useCardModal();
 

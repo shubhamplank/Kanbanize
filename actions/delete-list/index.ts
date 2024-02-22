@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { DeleteList } from "./schema";
+import createAuditLog from "@/lib/create-audit-log";
 
 const handler = async (
   data: InputType
@@ -27,6 +28,12 @@ const handler = async (
   try {
     list = await db.list.delete({
       where: { id, boardId, board: { orgId } },
+    });
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: "LIST",
+      action: "DELETE",
     });
   } catch (error) {
     console.error("delete_list", error);

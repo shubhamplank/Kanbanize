@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateBoard } from "./schema";
+import createAuditLog from "@/lib/create-audit-log";
 
 const handler = async (
   data: InputType
@@ -54,6 +55,12 @@ const handler = async (
         imageUserName,
         imageLinkHTML,
       },
+    });
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: "BOARD",
+      action: "CREATE",
     });
   } catch (error) {
     console.error("create_board", error);

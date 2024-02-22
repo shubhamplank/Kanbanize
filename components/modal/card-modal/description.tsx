@@ -51,7 +51,9 @@ export const Description: FC<DescriptionProps> = ({
       queryClient.invalidateQueries({
         queryKey: ["card", data.id],
       });
-
+      queryClient.invalidateQueries({
+        queryKey: ["card-logs", data.id],
+      });
       toast.success(`Description updated`);
       disableEditing();
       router.refresh();

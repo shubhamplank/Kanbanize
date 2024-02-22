@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { UpdateBoard } from "./schema";
+import createAuditLog from "@/lib/create-audit-log";
 
 const handler = async (
   data: InputType
@@ -30,6 +31,12 @@ const handler = async (
       data: {
         title,
       },
+    });
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: "BOARD",
+      action: "UPDATE",
     });
   } catch (error) {
     console.error("update_board", error);

@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { CreateCard } from "./schema";
+import createAuditLog from "@/lib/create-audit-log";
 
 const handler = async (
   data: InputType
@@ -43,6 +44,13 @@ const handler = async (
 
     card = await db.card.create({
       data: { title, listId, order: newOrder },
+    });
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: "CARD",
+      action: "CREATE",
     });
   } catch (error) {
     console.error("create_board", error);
