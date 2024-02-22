@@ -8,15 +8,30 @@ import { deleteCard } from "@/actions/delete-card";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { useCardModal } from "@/hooks/use-card-modal";
+import { copyCard } from "@/actions/copy-card";
 
 interface ActionsProps {
   id: string;
-  onClose: () => void;
+  listId: string;
+  title: string;
 }
 
-export const Actions: FC<ActionsProps> = ({ id }) => {
+export const Actions: FC<ActionsProps> = ({
+  id,
+  listId,
+  title,
+}) => {
   const params = useParams();
   const { onClose } = useCardModal();
+
+  const { execute: executeCopy, isLoading: isLoadingCopy } =
+    useAction(copyCard, {
+      onSuccess: () => {
+        onClose();
+        toast.success("card copied");
+      },
+      onError: (err) => toast.error(err),
+    });
 
   const { execute, isLoading } = useAction(deleteCard, {
     onSuccess: () => {
@@ -25,6 +40,11 @@ export const Actions: FC<ActionsProps> = ({ id }) => {
     },
     onError: (err) => toast.error(err),
   });
+
+  const onCopy = () => {
+    const boardId = params.boardId as string;
+    executeCopy({ title, listId, boardId });
+  };
 
   const onDelete = () => {
     const boardId = params.boardId as string;
@@ -39,6 +59,8 @@ export const Actions: FC<ActionsProps> = ({ id }) => {
         variant={"secondary"}
         className="bg-neutral-200 flex gap-x-2 w-full"
         size="sm"
+        onClick={onCopy}
+        disabled={isLoadingCopy}
       >
         <Copy size={20} />
         Copy

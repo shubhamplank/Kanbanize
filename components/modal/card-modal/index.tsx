@@ -46,7 +46,11 @@ export const CardModal = () => {
           {!cardData ? (
             <Actions.Skeleton />
           ) : (
-            <Actions id={id as string} />
+            <Actions
+              id={id as string}
+              listId={cardData.listId}
+              title={cardData.title}
+            />
           )}
         </div>
       </DialogContent>
