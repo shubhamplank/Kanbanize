@@ -17,6 +17,7 @@ import {
   useEventListener,
   useOnClickOutside,
 } from "usehooks-ts";
+import { Button } from "@/components/ui/button";
 
 interface DescriptionProps {
   data: CardWithList;

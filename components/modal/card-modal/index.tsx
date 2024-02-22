@@ -12,6 +12,7 @@ import { fetcher } from "@/lib/fetcher";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "./header";
 import { Description } from "./description";
+import { Actions } from "./actions";
 
 export const CardModal = () => {
   const { isOpen, onClose, id } = useCardModal();
@@ -42,6 +43,11 @@ export const CardModal = () => {
               )}
             </div>
           </div>
+          {!cardData ? (
+            <Actions.Skeleton />
+          ) : (
+            <Actions id={id as string} />
+          )}
         </div>
       </DialogContent>
     </Dialog>
