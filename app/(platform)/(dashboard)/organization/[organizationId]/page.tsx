@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { Info } from "./_components/info";
 import { Separator } from "@/components/ui/separator";
-import BoardList from "./_components/board-list";
+import { BoardList } from "./_components/board-list";
 
 interface OrganizationIdPageProps {}
 

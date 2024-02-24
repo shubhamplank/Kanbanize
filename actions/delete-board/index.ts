@@ -10,6 +10,7 @@ import { InputType, ReturnType } from "./types";
 import { DeleteBoard } from "./schema";
 import { redirect } from "next/navigation";
 import createAuditLog from "@/lib/create-audit-log";
+import { decreaseAvailableCount } from "@/lib/org-limit";
 
 const handler = async (
   data: InputType
@@ -30,6 +31,8 @@ const handler = async (
     board = await db.board.delete({
       where: { id, orgId },
     });
+
+    await decreaseAvailableCount();
     await createAuditLog({
       entityId: board.id,
       entityTitle: board.title,
