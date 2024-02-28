@@ -4,11 +4,28 @@ import { ElementRef, useRef, useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 
 import { cn } from "@/lib/utils";
-import { ListWithCards } from "@/types";
+import { CardWithList, ListWithCards } from "@/types";
 
 import { CardForm } from "./card-form";
 import { CardItem } from "./card-item";
 import { ListHeader } from "./list-header";
+
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { ColorPicker } from "@/components/modal/card-modal/color-picker";
 
 interface ListItemProps {
   data: ListWithCards;
@@ -67,11 +84,21 @@ export const ListItem = ({
                   )}
                 >
                   {data.cards.map((card, index) => (
-                    <CardItem
-                      index={index}
-                      key={card.id}
-                      data={card}
-                    />
+                    <ContextMenu key={card.id}>
+                      <ContextMenuTrigger>
+                        <CardItem
+                          index={index}
+                          data={card}
+                        />
+                      </ContextMenuTrigger>
+                      <ContextMenuContent className="w-64">
+                        <ContextMenuItem>
+                          <ColorPicker
+                            data={card as CardWithList}
+                          />
+                        </ContextMenuItem>
+                      </ContextMenuContent>
+                    </ContextMenu>
                   ))}
                   {provided.placeholder}
                 </ol>
