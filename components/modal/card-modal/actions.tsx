@@ -57,7 +57,7 @@ export const Actions = ({
       </p>
       <Button
         variant={"secondary"}
-        className="bg-neutral-200 flex gap-x-2 w-full"
+        className="bg-neutral-200 flex gap-x-2 w-full shadow-sm"
         size="sm"
         onClick={onCopy}
         disabled={isLoadingCopy}
@@ -67,7 +67,7 @@ export const Actions = ({
       </Button>
       <Button
         variant={"secondary"}
-        className="bg-neutral-200 flex gap-x-2 w-full"
+        className="bg-neutral-200 flex gap-x-2 w-full shadow-sm"
         size="sm"
         onClick={onDelete}
         disabled={isLoading}

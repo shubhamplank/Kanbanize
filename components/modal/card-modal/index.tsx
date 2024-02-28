@@ -13,6 +13,7 @@ import { fetcher } from "@/lib/fetcher";
 import { useQuery } from "@tanstack/react-query";
 
 import { Header } from "./header";
+import { ColorPicker } from "./color-picker";
 import { Description } from "./description";
 import { Actions } from "./actions";
 import { Activity } from "./activity";
@@ -36,9 +37,15 @@ export const CardModal = () => {
     >
       <DialogContent>
         {!cardData ? (
-          <Header.Skeleton />
+          <div className="flex">
+            <Header.Skeleton />
+            <ColorPicker.Skeleton />
+          </div>
         ) : (
-          <Header data={cardData} />
+          <div className="flex">
+            <Header data={cardData} />
+            <ColorPicker data={cardData} />
+          </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-4 md:gap-4">
           <div className="col-span-3">

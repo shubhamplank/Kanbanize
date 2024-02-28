@@ -21,4 +21,10 @@ export const UpdateCard = z.object({
       })
       .min(3, { message: "Description is too short" })
   ),
+  backgroundColor: z.optional(
+    z.string({
+      required_error: "backgroundColor is required",
+      invalid_type_error: "backgroundColor must be a hex",
+    })
+  ),
 });

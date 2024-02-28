@@ -1,9 +1,11 @@
 import { type FC, forwardRef } from "react";
+import { useFormState, useFormStatus } from "react-dom";
+
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useFormState, useFormStatus } from "react-dom";
-import { cn } from "@/lib/utils";
 import { FormErrors } from "./form-errors";
+
+import { cn } from "@/lib/utils";
 
 interface FormInputProps {
   id: string;

@@ -104,7 +104,7 @@ export const ListHeader: FC<ListHeaderProps> = ({
         </form>
       ) : (
         <div
-          className="w-full text-sm px-2.5 py-1 h-7 font-medium border-transparent"
+          className="w-full text-sm px-2.5 py-1 h-7 font-bold border-transparent"
           onClick={enableEditing}
         >
           {title}

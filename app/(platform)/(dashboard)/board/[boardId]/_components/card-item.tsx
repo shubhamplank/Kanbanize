@@ -3,6 +3,7 @@
 import { Card } from "@prisma/client";
 import { Draggable } from "@hello-pangea/dnd";
 import { useCardModal } from "@/hooks/use-card-modal";
+import { cn } from "@/lib/utils";
 
 interface CardItemProps {
   data: Card;
@@ -26,7 +27,10 @@ export const CardItem = ({
           ref={provided.innerRef}
           role="button"
           onClick={() => onOpen(data.id)}
-          className="truncate border-2 border-transparent hover:border-black py-2 px-3 text-sm bg-white rounded-md shadow-sm"
+          className={cn(
+            "truncate border-2 font-semibold border-transparent hover:border-black py-2 px-3 text-sm rounded-md shadow-sm",
+            `bg-[${data.backgroundColor || "#FFFFFF"}]`
+          )}
         >
           {data.title}
         </div>

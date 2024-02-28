@@ -71,7 +71,7 @@ export const Header: FC<HeaderProps> = ({ data }) => {
 
 Header.Skeleton = function HeaderSkeleton() {
   return (
-    <div className="flex items-start gap-x-3 mb-6">
+    <div className="flex items-start gap-x-3 mb-6 w-full">
       <Skeleton className="h-6 w-6 mt-1 bg-neutral-600" />
       <div className="">
         <Skeleton className="w-24 h-6 mb-1 bg-neutral-600" />
