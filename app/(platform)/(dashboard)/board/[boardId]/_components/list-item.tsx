@@ -12,18 +12,9 @@ import { ListHeader } from "./list-header";
 
 import {
   ContextMenu,
-  ContextMenuCheckboxItem,
+  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
-  ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { ColorPicker } from "@/components/modal/card-modal/color-picker";
 
@@ -40,6 +31,14 @@ export const ListItem = ({
 
   const [isEditing, setIsEditing] = useState(false);
 
+  const isResizingRef = useRef(false);
+  const listRef = useRef<ElementRef<"li">>(null);
+  const mouseDownClientX = useRef<number>(0);
+
+  const [isResetting, setIsResetting] = useState(false);
+
+  let offsetWidth = 0;
+
   const disableEditing = () => {
     setIsEditing(false);
   };
@@ -51,6 +50,61 @@ export const ListItem = ({
     });
   };
 
+  // Resize Logic of List
+  const handleMouseDown = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    isResizingRef.current = true;
+
+    mouseDownClientX.current = event.clientX;
+
+    offsetWidth = listRef.current
+      ? listRef.current.offsetWidth
+      : 0;
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizingRef.current) return;
+
+    let mouseMoveClientX = e.clientX;
+
+    let newWidth =
+      offsetWidth +
+      (mouseMoveClientX - mouseDownClientX.current);
+
+    if (newWidth < 240) newWidth = 240;
+    if (newWidth > 480) newWidth = 480;
+
+    if (listRef.current) {
+      listRef.current.style.width = `${newWidth}px`;
+    }
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    isResizingRef.current = false;
+    document.removeEventListener(
+      "mousemove",
+      handleMouseMove
+    );
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  const resetWidth = () => {
+    if (listRef.current) {
+      setIsResetting(true);
+      listRef.current.style.width = "272px";
+      setTimeout(() => {
+        setIsResetting(false);
+      }, 300);
+    }
+  };
+
   return (
     <Draggable
       draggableId={data.id}
@@ -59,8 +113,15 @@ export const ListItem = ({
       {(provided) => (
         <li
           {...provided.draggableProps}
-          ref={provided.innerRef}
-          className="shrink-0 h-full w-[272px] select-none"
+          ref={(el) => {
+            listRef.current = el;
+            provided.innerRef(el);
+          }}
+          className={cn(
+            "group/list h-full flex w-[272px] shrink-0 select-none relative",
+            isResetting &&
+              "transition-all ease-in-out duration-300"
+          )}
         >
           <div
             {...provided.dragHandleProps}
@@ -112,6 +173,20 @@ export const ListItem = ({
               disableEditing={disableEditing}
             />
           </div>
+          <div
+            onMouseDown={handleMouseDown}
+            onDoubleClick={resetWidth}
+            className="
+           opacity-0 
+           group-hover/list:opacity-100 
+           transition
+           cursor-ew-resize
+           absolute  
+           h-full w-1
+           bg-primary/10 
+           right-0 
+           top-0"
+          />
         </li>
       )}
     </Draggable>
