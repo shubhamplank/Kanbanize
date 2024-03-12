@@ -36,6 +36,7 @@ export const ListItem = ({
   const mouseDownClientX = useRef<number>(0);
 
   const [isResetting, setIsResetting] = useState(false);
+  const [parentId, setParentId] = useState<string>("");
 
   let offsetWidth = 0;
 
@@ -43,8 +44,10 @@ export const ListItem = ({
     setIsEditing(false);
   };
 
-  const enableEditing = () => {
+  const enableEditing = (id: string) => {
     setIsEditing(true);
+    if (id !== "") setParentId(id);
+
     setTimeout(() => {
       textareaRef.current?.focus();
     });
@@ -150,6 +153,7 @@ export const ListItem = ({
                         <CardItem
                           index={index}
                           data={card}
+                          onAddCard={enableEditing}
                         />
                       </ContextMenuTrigger>
                       <ContextMenuContent className="w-64">
@@ -171,6 +175,7 @@ export const ListItem = ({
               isEditing={isEditing}
               enableEditing={enableEditing}
               disableEditing={disableEditing}
+              parentId={parentId}
             />
           </div>
           <div

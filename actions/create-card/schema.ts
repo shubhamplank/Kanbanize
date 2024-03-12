@@ -11,4 +11,6 @@ export const CreateCard = z.object({
     }),
   boardId: z.string(),
   listId: z.string(),
+  parentId: z.string(),
+  isParent: z.boolean(),
 });

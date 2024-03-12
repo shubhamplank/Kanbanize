@@ -22,7 +22,7 @@ export async function GET(
         entityType: "CARD",
       },
       orderBy: { createdAt: "desc" },
-      take: 4,
+      take: 1,
     });
     return NextResponse.json(auditLogs);
   } catch (err) {

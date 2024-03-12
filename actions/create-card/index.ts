@@ -1,5 +1,4 @@
 "use server";
-
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 
@@ -14,16 +13,19 @@ const handler = async (
   data: InputType
 ): Promise<ReturnType> => {
   const { userId, orgId } = auth();
-
   if (!userId || !orgId) {
-    return {
-      error: "Unauthorized",
-    };
+    console.log("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
-  const { title, boardId, listId } = data;
-
-  let card;
+  const { title, boardId, listId, isParent, parentId } =
+    data;
+  console.log({
+    title,
+    boardId,
+    listId,
+    parentId,
+  });
 
   try {
     const list = await db.list.findUnique({
@@ -31,7 +33,8 @@ const handler = async (
     });
 
     if (!list) {
-      return { error: "list not found" };
+      console.log("List not found");
+      return { error: "List not found" };
     }
 
     const lastCard = await db.card.findFirst({
@@ -41,10 +44,27 @@ const handler = async (
     });
 
     const newOrder = lastCard ? lastCard.order + 1 : 1;
-
-    card = await db.card.create({
-      data: { title, listId, order: newOrder },
-    });
+    let card;
+    if (isParent) {
+      card = await db.card.create({
+        data: {
+          title,
+          listId,
+          order: newOrder,
+          isParent: true,
+        },
+      });
+    } else {
+      card = await db.card.create({
+        data: {
+          title,
+          listId,
+          order: newOrder,
+          parentId: parentId, // Set parentId to undefined if it's an independent card
+          isParent: false,
+        },
+      });
+    }
 
     await createAuditLog({
       entityId: card.id,
@@ -52,15 +72,14 @@ const handler = async (
       entityType: "CARD",
       action: "CREATE",
     });
+
+    revalidatePath(`/board/${boardId}`);
+
+    return { data: card };
   } catch (error) {
     console.error("create_board", error);
-    return {
-      error: "Failed to create.",
-    };
+    return { error: "Failed to create." };
   }
-
-  revalidatePath(`/board/${boardId}`);
-  return { data: card };
 };
 
 export const createCard = createSafeAction(

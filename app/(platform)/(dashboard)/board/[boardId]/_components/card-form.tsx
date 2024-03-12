@@ -21,9 +21,10 @@ import { createCard } from "@/actions/create-card";
 
 interface CardFormProps {
   listId: string;
-  enableEditing: () => void;
-  disableEditing: () => void;
+  parentId: string;
   isEditing: boolean;
+  enableEditing: (id: string) => void;
+  disableEditing: () => void;
 }
 
 export const CardForm = forwardRef<
@@ -31,11 +32,20 @@ export const CardForm = forwardRef<
   CardFormProps
 >(
   (
-    { listId, enableEditing, disableEditing, isEditing },
+    {
+      listId,
+      parentId,
+      isEditing,
+      enableEditing,
+      disableEditing,
+    },
     ref
   ) => {
     const params = useParams();
     const router = useRouter();
+    let isParent = true;
+
+    if (parentId) isParent = false;
 
     const formRef = useRef<ElementRef<"form">>(null);
 
@@ -74,7 +84,16 @@ export const CardForm = forwardRef<
       const listId = formData.get("listId") as string;
 
       console.log("i am submited", title);
-      execute({ title, listId, boardId });
+      console.log("isParent", isParent);
+
+      const pId = isParent ? "" : parentId;
+      execute({
+        parentId: pId,
+        isParent,
+        title,
+        listId,
+        boardId,
+      });
     };
 
     if (isEditing) {
@@ -116,7 +135,7 @@ export const CardForm = forwardRef<
           className="h-auto px-2 py-1.5 w-full justify-start text-muted-foreground text-sm "
           size={"sm"}
           variant={"ghost"}
-          onClick={enableEditing}
+          onClick={() => enableEditing("")}
         >
           <Plus className="h-4 w-4 mr-2" />
           Add a card

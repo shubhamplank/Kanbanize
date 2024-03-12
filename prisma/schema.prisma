@@ -48,8 +48,15 @@ model Card {
   description     String?
   backgroundColor String? @default("#FFFFFF")
 
+  parentId String?
+  parent   Card?   @relation("ChildCards", fields: [parentId], references: [id], onDelete: Cascade)
+
+  isParent Boolean @default(true)
+
   listId String
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  childCards Card[] @relation("ChildCards")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
